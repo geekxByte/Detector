@@ -1,0 +1,19 @@
+2015-02-02  Cyber MacGeddon  <cybermaggedon@gmail.com>
+
+	* Updated to version 0.61.
+
+	* Fixed HTTP crashing problem in cybermon.
+
+	* Fixed documentation paths.
+
+	* Changed from use of cybox hostname to domainname for STIX handling.
+	  This seems to be the more 'correct' approach.
+
+2013-10-01  Cyber MacGeddon  <cybermaggedon@gmail.com>
+
+	* Added autoconf support.
+
+	* Added variant LUA compilation support for 5.1 and 5.2.
+
+	* Now compiles on a MacBook!
+

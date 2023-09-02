@@ -1,0 +1,40 @@
+
+VERSION=@VERSION@
+
+do_substitution = date=$$(date -R);sed -e "s/[@]DATE[@]/$${date}/g" \
+	-e "s/[@]VERSION[@]/@VERSION@/g"
+
+rpm:
+	make dist
+	mkdir -p RPM/SOURCES
+	cp cyberprobe-${VERSION}.tar.gz RPM/SOURCES/
+	rpmbuild --define "_topdir `pwd`/RPM" -ba cyberprobe.spec
+
+debian/changelog: debian/changelog.in Makefile
+	$(do_substitution) < debian/changelog.in > debian/changelog
+
+deb: debian/changelog
+	rm -rf cyberprobe-${VERSION}
+	make dist
+	cp cyberprobe-${VERSION}.tar.gz cyberprobe_${VERSION}.orig.tar.gz
+	tar xfz cyberprobe-${VERSION}.tar.gz
+	cp -r debian/ cyberprobe-${VERSION}/
+	cd cyberprobe-${VERSION}/; dpkg-buildpackage -us -uc
+
+# Hack, Ubuntu libreadline version is different.
+ubuntu: debian/changelog
+	rm -rf cyberprobe-${VERSION}
+	make dist
+	cp cyberprobe-${VERSION}.tar.gz cyberprobe_${VERSION}.orig.tar.gz
+	tar xfz cyberprobe-${VERSION}.tar.gz
+	cp -r debian/ cyberprobe-${VERSION}/
+	sed -i 's/libreadline6/libreadline7/g' cyberprobe-${VERSION}/debian/control
+	cd cyberprobe-${VERSION}/; dpkg-buildpackage -us -uc
+
+version:
+	@echo ${VERSION}
+
+tag:
+	git tag -a v${VERSION} -m ''
+	git push --tags
+
